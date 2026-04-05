@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ibuntu — A Linux Distribution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f9f7;
+    --surface: #ffffff;
+    --border: #e4e3de;
+    --text: #1a1a18;
+    --muted: #6b6b66;
+    --accent: #e35d2b;
+    --accent-light: #fdf0eb;
+    --accent-muted: #c4440f;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    height: 58px;
+    gap: 2.5rem;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .logo-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .nav-links {
+    display: flex;
+    gap: 0;
+    margin-left: auto;
+  }
+  .nav-links button {
+    background: none;
+    border: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    transition: color 0.15s, background 0.15s;
+    font-weight: 400;
+  }
+  .nav-links button:hover { color: var(--text); background: var(--bg); }
+  .nav-links button.active { color: var(--text); font-weight: 500; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* MAIN WRAPPER */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* HOME PAGE */
+  .hero {
+    padding: 6rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    font-weight: 300;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  .hero h1 span { font-weight: 500; }
+  .hero-desc {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    line-height: 1.65;
+  }
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--text);
+    color: #fff;
+    border: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary {
+    background: none;
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 22px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-secondary:hover { background: var(--surface); border-color: #bbb; }
+
+  .features {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-light);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 15px;
+  }
+  .feature-card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .feature-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .latest-release {
+    padding: 4rem 0;
+  }
+  .release-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .release-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--accent-light);
+    color: var(--accent-muted);
+    padding: 3px 10px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .release-banner h3 {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .release-banner p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* RELEASES PAGE */
+  .page-header {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-header h2 {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .page-header h2 span { font-weight: 500; }
+  .page-header p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .releases-list { padding: 3rem 0; }
+  .release-item {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 2rem;
+    align-items: start;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .release-item:last-child { border-bottom: none; }
+  .release-version {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    padding-top: 2px;
+  }
+  .release-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .release-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .badge-latest { background: var(--accent-light); color: var(--accent-muted); }
+  .badge-stable { background: #eef5e8; color: #4a7c26; }
+  .badge-old { background: #f3f3f1; color: #888; }
+  .release-body h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .release-body p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .release-body ul {
+    list-style: none;
+    margin-bottom: 14px;
+  }
+  .release-body ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 2px 0;
+    padding-left: 14px;
+    position: relative;
+  }
+  .release-body ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+    font-size: 11px;
+  }
+  .dl-btn {
+    background: none;
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .dl-btn:hover { background: var(--bg); border-color: #bbb; }
+
+  /* ABOUT PAGE */
+  .about-content { padding: 4rem 0; }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+  }
+  @media (max-width: 600px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .release-item { grid-template-columns: 1fr; gap: 1rem; }
+    .release-item > a { grid-row: 1; }
+  }
+  .about-section h3 {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .about-section p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  .stat-row {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .stat { flex: 1; min-width: 120px; }
+  .stat-number {
+    font-family: var(--mono);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.04em;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: background 0.15s;
+    margin-top: 1rem;
+  }
+  .gh-link:hover { background: var(--bg); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo" onclick="showPage('home')">
+      <span class="logo-dot"></span>ibuntu
+    </span>
+    <div class="nav-links">
+      <button id="nav-home" class="active" onclick="showPage('home')">Home</button>
+      <button id="nav-releases" onclick="showPage('releases')">Releases</button>
+      <button id="nav-about" onclick="showPage('about')">About</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="content">
+    <div class="hero">
+      <div class="hero-eyebrow">Linux Distribution</div>
+      <h1>Built different.<br><span>Built by you.</span></h1>
+      <p class="hero-desc">ibuntu is a community-crafted Linux distribution focused on simplicity, speed, and a great out-of-the-box experience.</p>
+      <div class="btn-group">
+        <button class="btn-primary" onclick="showPage('releases')">
+          ↓ Download ibuntu
+        </button>
+        <a class="btn-secondary" href="https://github.com/cessnadude2028/ibuntu" target="_blank">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="section-label">Why ibuntu</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Fast by default</h3>
+          <p>Minimal bloat, optimised kernel config, and a lean desktop environment that gets out of your way.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛠</div>
+          <h3>Developer-ready</h3>
+          <p>Comes with essential dev tools pre-installed so you can get to work from the first boot.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure out-of-the-box</h3>
+          <p>Sensible security defaults including automatic updates for critical packages.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧩</div>
+          <h3>Ubuntu-compatible</h3>
+          <p>Full compatibility with the Ubuntu ecosystem — access the same massive software library.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="latest-release">
+      <div class="section-label">Latest release</div>
+      <div class="release-banner">
+        <div>
+          <span class="release-tag">beta</span>
+          <h3>ibuntu v0.1.0-beta</h3>
+          <p>First public release — April 2026</p>
+        </div>
+        <button class="btn-primary" onclick="showPage('releases')">
+          See all releases →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RELEASES -->
+<div id="page-releases" class="page">
+  <div class="content">
+    <div class="page-header">
+      <h2><span>Release</span> history</h2>
+      <p>All ibuntu releases with changelogs and download links.</p>
+    </div>
+    <div class="releases-list">
+
+      <div class="release-item">
+        <div>
+          <div class="release-version">v0.1.0-beta</div>
+          <div class="release-date">Apr 2026</div>
+          <div style="margin-top:8px;"><span class="release-badge badge-latest">latest</span></div>
+        </div>
+        <div class="release-body">
+          <h4>First beta release</h4>
+          <p>The first public release of ibuntu. Things may be rough around the edges — feedback and bug reports are very welcome. Download links will appear here once the release is published on GitHub.</p>
+          <ul>
+            <li>Base system install</li>
+            <li>Custom ibuntu desktop environment</li>
+            <li>Pre-installed developer toolchain</li>
+          </ul>
+        </div>
+        <a class="dl-btn" href="https://github.com/cessnadude2028/ibuntu/releases" target="_blank">
+          ↓ Download
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="content">
+    <div class="page-header">
+      <h2>About <span>ibuntu</span></h2>
+      <p>The story behind the distro.</p>
+    </div>
+    <div class="about-content">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-number">0.1β</div>
+          <div class="stat-label">Current version</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">2026</div>
+          <div class="stat-label">Founded</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">Ubuntu</div>
+          <div class="stat-label">Based on</div>
+        </div>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-section">
+          <h3>What is ibuntu?</h3>
+          <p>ibuntu is a custom Linux distribution built from the ground up with a specific vision: a system that's fast, clean, and genuinely pleasant to use from day one. No cruft, no ads, no compromises.</p>
+        </div>
+        <div class="about-section">
+          <h3>Who built it?</h3>
+          <p>ibuntu is an independent project maintained by its creator. It started as a personal experiment and grew into something worth sharing with the wider Linux community.</p>
+        </div>
+        <div class="about-section">
+          <h3>Contributing</h3>
+          <p>ibuntu is open source. Bug reports, feature suggestions, and pull requests are all welcome on GitHub. Check the issues page to see where you can help.</p>
+        </div>
+        <div class="about-section">
+          <h3>Roadmap</h3>
+          <p>Upcoming work includes a graphical software centre, improved theming support, and ARM builds for Raspberry Pi. Follow the repo for updates.</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <p style="font-size:14px;color:var(--muted);">ibuntu is free and open source software, released under the GPL. All source code is available on GitHub.</p>
+      <a class="gh-link" href="https://github.com/cessnadude2028/ibuntu" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        github.com/cessnadude2028/ibuntu
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ibuntu — open source linux distribution — built with ♥
+</footer>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
